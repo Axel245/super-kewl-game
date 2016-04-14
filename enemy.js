@@ -17,6 +17,9 @@ var Enemy = function()
 			   offset.y * canvas.height);
 	this.position.add(offset);
 	
+	this.velocity.reverse();
+	this.velocity.multiplyScalar(speed);
+	
 	this.image.src = "enemy.png";
 }
 Enemy.prototype.update = function(deltaTime)

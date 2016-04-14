@@ -16,3 +16,16 @@ var Bullet = function()
 	
 	this.image.src = "hero.png";
 };
+
+Bullet.prototype.update = function(deltaTime)
+{
+	var posChange = this.velocity.copy();
+	posChange.multiplyScalar(deltaTime);
+	this.position.add(posChange);
+};
+
+Bullet.prototype.draw = function()
+{
+	DrawImage(context, this.image, this.position.x,
+				this.position.y, this.rotation);
+};

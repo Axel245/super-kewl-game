@@ -11,7 +11,7 @@ var Vector2 = function (x, y)
 	{
 		this.y = y;
 	}
-};
+
 
 	this.reverse = function()
 	{
@@ -32,13 +32,13 @@ var Vector2 = function (x, y)
 	
 	this.magnitude = function()
 	{
-		return Math.sqrt(this.x*this.x + this.y*this.y)
+		return Math.sqrt(this.x*this.x + this.y*this.y);
 	};
 	
 	this.normalize = function()
 	{
 		var mag = this.magnitude();
-		if(mag = 0) return;
+		if(mag == 0) return;
 		
 		this.x /= mag;
 		this.y /= mag;
@@ -56,10 +56,10 @@ var Vector2 = function (x, y)
 		this.y -= v2.y
 	};
 	
-	this.multipleScalar = function(num)
+	this.multiplyScalar = function(num)
 	{
-		this.x += num;
-		this.y += num;
+		this.x *= num;
+		this.y *= num;
 	};
 
 	this.rotateDirection = function(angle)
@@ -72,3 +72,5 @@ var Vector2 = function (x, y)
 		
 		this.set(dirX, dirY)
 	};
+	
+};

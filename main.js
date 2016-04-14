@@ -31,8 +31,7 @@ function getDeltaTime()
 
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
-var player = new Player();
-var keyboard = new Keyboard();
+
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
@@ -40,11 +39,13 @@ var keyboard = new Keyboard();
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
+var player = new Player();
+var keyboard = new Keyboard();
+var enemy = new Enemy();
 
 // load an image to draw
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
-
 
 
 function run()
@@ -56,6 +57,8 @@ function run()
 	
 	player.update(deltaTime);
 	player.draw();
+	enemy.update(deltaTime);
+	enemy.draw();
 		
 	// update the frame counter 
 	fpsTime += deltaTime;

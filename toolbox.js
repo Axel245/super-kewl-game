@@ -4,7 +4,7 @@ function SetupImageEvents(object, img)
 {
 	img.onload = function() {
 		object.width = img.width;
-		object.height = image.height;
+		object.height = img.height;
 	};
 	img.onerror = function() {
 		console.log("Failed to load image at path " + this.src)

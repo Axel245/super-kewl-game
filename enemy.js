@@ -1,11 +1,12 @@
 var Enemy = function()
 {
 	this.image = document.createElement("img");
-	this.position = new Vector2(canvas.width/2, canvas.height/2);
+	this.position = new Vector2(canvas.width/2, canvas.height/3);
 	this.width = 0;
 	this.height = 0;
 	this.velocity = new Vector2();
 	var speed = 32;
+	
 	while(this.velocity.magnitude() == 0)
 	{
 		this.velocity.set(rand(-10, 10), rand(-10, 10));
@@ -20,7 +21,7 @@ var Enemy = function()
 	this.velocity.reverse();
 	this.velocity.multiplyScalar(speed);
 	
-	this.image.src = "enemy.png";
+	this.image.src = "hero.png";
 }
 Enemy.prototype.update = function(deltaTime)
 {

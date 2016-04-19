@@ -39,11 +39,8 @@ var SCREEN_HEIGHT = canvas.height;
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
-var player = new Player();
+
 var keyboard = new Keyboard();
-var enemy = new Enemy();
-var bullets = [];
-bullets.push(new Bullet());
 var LAYER_COUNT = 3;
 // number of layers in map
 var MAP = {tw:60,th:15};
@@ -61,13 +58,102 @@ var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 // how many rows of tile images are in the tileset
 
+var LAYER_COUNT = 3;
+var LAYER_BACKGROUND = 0;
+var LAYER_PLATFORMS = 1;
+var LAYER_LADDERS = 2;
+
+//abitrary choice for 1m
+var METER = TILE;
+
+// very exaggerated gravity(6x)
+var GRAVITY = METER * 9.8 * 6;
+
+// max horizontal speed(10t/ps)
+var MAXDX = METER * 10;
+
+//max vertical speed(15t/s)
+var MAXDY = METER * 15;
+
+// horizontal acceleration - take 1/2 second to reach maxdx
+var ACCEL = MAXDX * 2;
+
+// horizontal friction - take 1/6 second to stop from maxdx
+var FRICTION = MAXDX  * 6;
+
+//(a large)instantaneous jump impulse
+var JUMP = METER * 1500;
+
 //load the image to use for the level tiles
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
+var cells = [];
+
 // load an image to draw
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
+
+function cellAtPixelCoord(layer, x,y)
+{
+	if(x<0 || x> SCREEN_WIDTH)
+		return 1;
+	// let the player drop of the bottom of the screen (this means death)
+	if(y>SCREEN_HEIGHT)
+		return 0;
+	return cellAtTileCoord(layer, p2t(x), p2t(y));
+};
+
+function cellAtTileCoord(layer, tx, ty)
+{
+	if(tx <	0 || tx >= MAP.tw)
+		return 1;
+	// let the playher drop of the bottom of the screen (this means death)
+	if(ty>=MAP.th)
+		return 0;
+	return cells[layer][ty][tx];
+};
+
+function tileToPixel(tile)
+{
+	return tile * TILE;
+};
+
+function pixelToTile(pixel)
+{
+	return Math.floor(pixel/TILE)
+}
+
+function bound(value, min, max)
+{
+	if(value < min)
+		return min;
+	if(value > max)
+		return max;
+	return value;
+}
+
+function cellAtPixelCoord(layer, x,y)
+{
+	if(x < 0 || x > SCREEN_WIDTH) // remove '|| y < 0'
+				return 1;
+	// let the player drop of the bottom of the screen (this means death)
+	if(y> SCREEN_HEIGHT)
+		return 0;
+	return cellAtTileCoord(layer, p2t(x), p2t(y));
+};
+
+function cellAtTileCoord(layer, tx, ty) // remove '|| y<0'
+{
+	if(tx<0 || tx >= MAP.tw)
+		return 1;
+	// let the player drop of the bottom of the screen (this means death)
+	if(ty>=MAP.th)
+		return 0;
+	return cells[layer][ty][tx];
+};
+
+
 
 function drawMap()
 {
@@ -92,6 +178,33 @@ function drawMap()
 	}
 }
 
+function initialize(){
+	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
+		cells[layerIdx] = [];
+		var idx = 0;
+		for(var y = 0; y < level1.layers[layerIdx].height; y++) {
+			cells[layerIdx][y] = [];
+			for(var x = 0; x < level1.layers[layerIdx].width; x++) {
+				if(level1.layers[layerIdx].data[idx] != 0) {
+					// for each tile we find in the layer data, we need to create 4 collisions
+					// (because our collision squares are 35x35 but the tiles in the level are 70x70
+				    cells[layerIdx][y][x] = 1;
+					cells[layerIdx][y-1][x] = 1;
+					cells[layerIdx][y-1][x+1] = 1;
+					cells[layerIdx][y][x+1] = 1;
+				}
+				else if(cells[layerIdx][y][x] != 1) {
+					// if we haven't set this cell's value, then set it to 0 now
+					cells[layerIdx][y][x] = 0;
+				}
+				idx++;
+			}
+		}
+	}
+}
+
+var player = new Player();
+
 function run()
 {
 	context.fillStyle = "#ccc";		
@@ -101,14 +214,6 @@ function run()
 	drawMap();
 	player.update(deltaTime);
 	player.draw();
-	enemy.update(deltaTime);
-	enemy.draw();
-		
-	for(var i = 0; i < bullets.length; ++i)
-	{
-		bullets[i].update(deltaTime);
-		bullets[i].draw();
-	}
 		
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -126,6 +231,7 @@ function run()
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
 
+initialize();
 
 //-------------------- Don't modify anything below here
 

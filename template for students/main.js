@@ -39,58 +39,10 @@ var SCREEN_HEIGHT = canvas.height;
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
-var player = new Player();
-var keyboard = new Keyboard();
-var enemy = new Enemy();
-var bullets = [];
-bullets.push(new Bullet());
-var LAYER_COUNT = 3;
-// number of layers in map
-var MAP = {tw:60,th:15};
-// how big level is e,g width x height
-var TILE = 35;
-/// the width/height of a tile(in pixels) (map grid tiles not tilemap tiles)
-var TILESET_TILE = TILE * 2;
-// the width/height of a tile in the tileset.
-var TILESET_PADDING = 2;
-//how many pixels are between the image border and the tile images in the tilemap
-var TILESET_SPACING = 2;
-// How many pixels are between tile images in the tilemap
-var TILESET_COUNT_X = 14;
-//how many columns of tile images are in the tileset
-var TILESET_COUNT_Y = 14;
-// how many rows of tile images are in the tileset
-
-//load the image to use for the level tiles
-var tileset = document.createElement("img");
-tileset.src = "tileset.png";
 
 // load an image to draw
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
-
-function drawMap()
-{
-	for(var layerIdx = 0; layerIdx < LAYER_COUNT;layerIdx++)
-	{
-		var idx = 0;
-		for(var y=0;y < level1.layers[layerIdx].height; y++)
-		{
-			for(var x=0; x < level1.layers[layerIdx].width; x++)
-			{
-				if(level1.layers[layerIdx].data[idx]!=0)
-				{
-					// the tiles in the tiled map are base 1 ( meaning a value of 0 means no tile), so subtract one from the tileset id to get the correct fileCreatedDate
-					var tileIndex = level1.layers[layerIdx].data[idx]-1;
-					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
-					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
-				}
-				idx++;
-			}
-		}	
-	}
-}
 
 function run()
 {
@@ -98,17 +50,9 @@ function run()
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
-	drawMap();
-	player.update(deltaTime);
-	player.draw();
-	enemy.update(deltaTime);
-	enemy.draw();
-		
-	for(var i = 0; i < bullets.length; ++i)
-	{
-		bullets[i].update(deltaTime);
-		bullets[i].draw();
-	}
+	
+	context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
+	
 		
 	// update the frame counter 
 	fpsTime += deltaTime;

@@ -1,0 +1,13 @@
+var enemy = new Enemy();
+var bullets = [];
+bullets.push(new Bullet());
+
+
+	enemy.update(deltaTime);
+	enemy.draw();
+		
+	for(var i = 0; i < bullets.length; ++i)
+	{
+		bullets[i].update(deltaTime);
+		bullets[i].draw();
+	}

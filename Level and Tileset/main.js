@@ -37,7 +37,7 @@ var STATE_GAMEOVER = 2;
 var gameState = STATE_SPLASH;
 var splashTimer = 3;
 var background = document.createElement("img");
-background.src = "BACKGR0UND.png";
+background.src = "ChuckNorris.png";
 function runSplash(deltaTime)
 {
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE))
@@ -185,7 +185,7 @@ function drawMap()
 					var tileIndex = level1.layers[layerIdx].data[idx]-1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE + 1, TILESET_TILE + 1);
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
 				}
 				idx++;
 			}
@@ -225,6 +225,7 @@ function runGame(deltaTime)
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
+	var deltaTime = getDeltaTime();
 	drawMap();
 	player.update(deltaTime);
 	player.draw();

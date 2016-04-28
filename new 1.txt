@@ -11,3 +11,14 @@ bullets.push(new Bullet());
 		bullets[i].update(deltaTime);
 		bullets[i].draw();
 	}
+	
+var cavelevel = document.createElement("img");
+cavelevel.src = "cavelevels.png";
+var background = document.createElement("img");
+background.src = "splash.png";
+var cavelevelmusic = new Audio("cavelevelmusic.wav");
+cavelevelmusic.loop = true ;
+cavelevelmusic.play ();	
+
+var splash = document.createElement("img");
+splash.src = "splash.png";

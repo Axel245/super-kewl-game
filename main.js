@@ -56,21 +56,26 @@ var fpsCount = 0;
 var fpsTime = 0;
 
 var keyboard = new Keyboard();
-var LAYER_COUNT = 3;
+var LAYER_COUNT = TileMaps["lervel1"].layers.length;
 // number of layers in map
-var MAP = {tw:60,th:15};
+var MAP = {tw: TileMaps["lervel1"].width, th: TileMaps["lervel1"].height};
 // how big level is e,g width x height
-var TILE = 35;
+var TILE = TileMaps["lervel1"].tilewidth;
 /// the width/height of a tile(in pixels) (map grid tiles not tilemap tiles)
-var TILESET_TILE = TILE * 2;
+var TILESET_TILE = TileMaps["lervel1"].tilesets[0].tilewidth;
 // the width/height of a tile in the tileset.
-var TILESET_PADDING = 2;
+var TILESET_PADDING = TileMaps["level1"].tilesets[0].margin;
 //how many pixels are between the image border and the tile images in the tilemap
-var TILESET_SPACING = 2;
+var TILESET_SPACING = TileMaps["lervel1"].tilesets[0].spacing;
 // How many pixels are between tile images in the tilemap
-var TILESET_COUNT_X = 14;
+var TILESET_COUNT_X = TileMaps["lervel1"].tilesets[0].columns;
 //how many columns of tile images are in the tileset
-var TILESET_COUNT_Y = 14;
+var TILESET_COUNT_Y = TileMaps["lervel1"].tilesets[0].tilecount
+							/ TILESET_COUNT_X;
+							
+
+var tileset = document.createElement("img");
+tileset.src = TileMaps("lervel1").tilesets[0].image;
 // how many rows of tile images are in the tileset
 
 var LAYER_COUNT = 3;
@@ -175,14 +180,14 @@ function drawMap()
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT;layerIdx++)
 	{
 		var idx = 0;
-		for(var y=0;y < level1.layers[layerIdx].height; y++)
+		for(var y=0;y < TileMaps["lervel1"].layers[layerIdx].height; y++)
 		{
-			for(var x=0; x < level1.layers[layerIdx].width; x++)
+			for(var x=0; x < TileMaps["lervel1"].layers[layerIdx].width; x++)
 			{
-				if(level1.layers[layerIdx].data[idx]!=0)
+				if(TileMaps["lervel1"].layers[layerIdx].data[idx]!=0)
 				{
 					// the tiles in the tiled map are base 1 ( meaning a value of 0 means no tile), so subtract one from the tileset id to get the correct fileCreatedDate
-					var tileIndex = level1.layers[layerIdx].data[idx]-1;
+					var tileIndex = TileMaps["lervel1"].layers[layerIdx].data[idx]-1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
 					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE + 1, TILESET_TILE + 1);
@@ -197,10 +202,10 @@ function initialize(){
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
 		cells[layerIdx] = [];
 		var idx = 0;
-		for(var y = 0; y < level1.layers[layerIdx].height; y++) {
+		for(var y = 0; y < TileMaps["lervel1"].layers[layerIdx].height; y++) {
 			cells[layerIdx][y] = [];
-			for(var x = 0; x < level1.layers[layerIdx].width; x++) {
-				if(level1.layers[layerIdx].data[idx] != 0) {
+			for(var x = 0; x < TileMaps["lervel1"].layers[layerIdx].width; x++) {
+				if(TileMaps["lervel1"].layers[layerIdx].data[idx] != 0) {
 					// for each tile we find in the layer data, we need to create 4 collisions
 					// (because our collision squares are 35x35 but the tiles in the level are 70x70
 				    cells[layerIdx][y][x] = 1;

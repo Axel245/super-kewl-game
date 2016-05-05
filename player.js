@@ -29,7 +29,7 @@ var Player = function() {
 		this.sprite.setAnimationOffset(i, -55, -87);
 	}
 	this.position = new Vector2();
-	this.position.set(9*TILE, 0*TILE );
+	this.position.set(2*TILE, 10*TILE );
 	
 	this.width = 159;
 	this.height = 163;
@@ -40,6 +40,8 @@ var Player = function() {
 	this.jumping = false;
 	
 	this.direction = LEFT; 
+	this.isDead = false;
+	
 };
 
 Player.prototype.update = function(deltaTime)
@@ -142,6 +144,13 @@ Player.prototype.update = function(deltaTime)
 	var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx+1, ty);
 	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 	var celldiag = cellAtTileCoord(LAYER_PLATFORMS,tx + 1, ty + 1);
+	
+	
+	
+	if (cellAtTileCoord(LAYER_RAVA, tx, ty -1))
+	{
+		this.isDead = true;
+	}
 	
 	// If the player has vetical velocity, then check to see if they have hit a platform
 	// below or above, in which case, stop their vertical velocity, and clamp their y position.

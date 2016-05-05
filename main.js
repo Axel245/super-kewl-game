@@ -37,7 +37,7 @@ var STATE_GAMEOVER = 2;
 var gameState = STATE_SPLASH;
 var splashTimer = 3;
 var background = document.createElement("img");
-background.src = "BACKGR0UND.png";
+background.src = "menu.png";
 function runSplash(deltaTime)
 {
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE))
@@ -48,12 +48,22 @@ function runSplash(deltaTime)
 	context.drawImage(background, 0, 0);
 }
 
+function runGameOver(deltaTime)
+{
+	context.drawImage(endgame, 0, 0);
+}
+
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
 // constant speed)
 var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
+
+var score = 0;
+var lives = 4;
+
+
 
 var keyboard = new Keyboard();
 var LAYER_COUNT = TileMaps["lervel1"].layers.length;
@@ -64,7 +74,7 @@ var TILE = TileMaps["lervel1"].tilewidth;
 /// the width/height of a tile(in pixels) (map grid tiles not tilemap tiles)
 var TILESET_TILE = TileMaps["lervel1"].tilesets[0].tilewidth;
 // the width/height of a tile in the tileset.
-var TILESET_PADDING = TileMaps["level1"].tilesets[0].margin;
+var TILESET_PADDING = TileMaps["lervel1"].tilesets[0].margin;
 //how many pixels are between the image border and the tile images in the tilemap
 var TILESET_SPACING = TileMaps["lervel1"].tilesets[0].spacing;
 // How many pixels are between tile images in the tilemap
@@ -75,11 +85,10 @@ var TILESET_COUNT_Y = TileMaps["lervel1"].tilesets[0].tilecount
 							
 
 var tileset = document.createElement("img");
-tileset.src = TileMaps("lervel1").tilesets[0].image;
+tileset.src = TileMaps["lervel1"].tilesets[0].image;
 // how many rows of tile images are in the tileset
 
-var LAYER_COUNT = 3;
-var LAYER_BACKGROUND = 0;
+var LAYER_RAVA = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
 
@@ -107,7 +116,14 @@ var JUMP = METER * 1500;
 //load the image to use for the level tiles
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
-
+var carve = document.createElement("img");
+carve.src = "cavebackground.png";
+var endgame = document.createElement("img");
+endgame.src = "ENDGAME.png";
+var healthImage = document.createElement("img");
+healthImage.src = "health.png";
+var scoreBoard = document.createElement("img");
+scoreBoard.src = "scoreboard.png"
 var cells = [];
 
 // load an image to draw
@@ -229,10 +245,28 @@ function runGame(deltaTime)
 {
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
-	
+	context.drawImage(carve, 0, 0);
 	drawMap();
 	player.update(deltaTime);
 	player.draw();
+	if (player.isDead == true)
+	{
+		gameState = STATE_GAMEOVER
+	}
+	
+	context.drawImage(scoreBoard, 800, 620);
+	
+	//score
+	context.fillStyle = "yellow";
+	context.font = "32px Arial";
+	var scoreText = "Score: " + score;
+	context.fillText(scoreText, SCREEN_WIDTH - 980, 500);
+	
+	//loives
+	if(lives == 4)
+	{
+		context.drawImage(healthImage, 15, 620)
+	}
 	
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -250,11 +284,6 @@ function runGame(deltaTime)
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
 
-
-function runGameOver(deltaTime)
-{
-	
-}
 
 function run()
 {

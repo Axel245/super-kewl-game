@@ -121,10 +121,19 @@ carve.src = "cavebackground.png";
 var endgame = document.createElement("img");
 endgame.src = "ENDGAME.png";
 var healthImage = document.createElement("img");
-healthImage.src = "health.png";
+healthImage.src = "health100.png";
+var healthImage75 = document.createElement("img");
+healthImage75.src = "health75.png";
+var healthImage50 = document.createElement("img");
+healthImage50.src = "health50.png";
+var healthImage25 = document.createElement("img");
+healthImage25.src = "health25.png";
+
 var scoreBoard = document.createElement("img");
 scoreBoard.src = "scoreboard.png"
 var cells = [];
+
+var isdied = 4;
 
 // load an image to draw
 var chuckNorris = document.createElement("img");
@@ -190,29 +199,55 @@ function cellAtTileCoord(layer, tx, ty) // remove '|| y<0'
 };
 
 
-
+var worldOffsetX = 0;
 function drawMap()
 {
+	var startX = -1;
+	var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2;
+	var tileX = pixelToTile(player.position.x);
+	var offsetX = TILE + Math.floor(player.position.x%TILE);
+	
+	startX = tileX - Math.floor(maxTiles / 2);
+	
+	if(startX < -1)
+	{
+		startX = 0;
+		offsetX = 0;
+	}
+	if(startX > MAP.tw - maxTiles)
+	{
+		startX = MAP.tw - maxTiles + 1;
+		offsetX = TILE;
+	}
+	
+	worldOffsetX = startX * TILE + offsetX;
+	
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT;layerIdx++)
 	{
-		var idx = 0;
 		for(var y=0;y < TileMaps["lervel1"].layers[layerIdx].height; y++)
 		{
-			for(var x=0; x < TileMaps["lervel1"].layers[layerIdx].width; x++)
+			var idx = y * TileMaps["lervel1"].layers[layerIdx].width + startX;
+			for(var x = startX; x < startX + maxTiles; x++)
 			{
 				if(TileMaps["lervel1"].layers[layerIdx].data[idx]!=0)
 				{
 					// the tiles in the tiled map are base 1 ( meaning a value of 0 means no tile), so subtract one from the tileset id to get the correct fileCreatedDate
 					var tileIndex = TileMaps["lervel1"].layers[layerIdx].data[idx]-1;
-					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
-					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE + 1, TILESET_TILE + 1);
+					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * 
+							(TILESET_TILE + TILESET_SPACING);
+					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
+							(TILESET_TILE + TILESET_SPACING);
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
+							(x-startX)*TILE - offsetX, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
 				}
 				idx++;
 			}
 		}	
 	}
 }
+
+var musicBackground;
+var sfxFire;
 
 function initialize(){
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
@@ -237,6 +272,24 @@ function initialize(){
 			}
 		}
 	}
+	musicBackground = new Howl(
+	{
+		urls: ["background.mp3"],
+		loop: true,
+		buffer: true,
+		volume: 0.3
+	});
+	musicBackground.play();
+	
+	sfxFire = new Howl(
+		{
+			urls: ["fireeffect.ogg"],
+			buffer: true,
+			volume: 1,
+			onend: function() {
+					isSfxPlaying = false;
+			}
+		});
 }
 
 var player = new Player();
@@ -251,7 +304,30 @@ function runGame(deltaTime)
 	player.draw();
 	if (player.isDead == true)
 	{
-		gameState = STATE_GAMEOVER
+		isdied -= 1;
+		if(isdied == 0)
+		{
+		gameState = STATE_GAMEOVER	
+		}
+		player.isDead = false;
+		player = new Player
+		
+	}
+	if(isdied == 4)
+	{
+		context.drawImage(healthImage, 15, 620);
+	}
+	else if (isdied == 3)
+	{
+		context.drawImage(healthImage75, 15, 620);
+	}
+	else if (isdied == 2)
+	{
+		context.drawImage(healthImage50, 15, 620);
+	}
+	else if (isdied == 1)
+	{
+		context.drawImage(healthImage25, 15, 620);
 	}
 	
 	context.drawImage(scoreBoard, 800, 620);
@@ -260,13 +336,13 @@ function runGame(deltaTime)
 	context.fillStyle = "yellow";
 	context.font = "32px Arial";
 	var scoreText = "Score: " + score;
-	context.fillText(scoreText, SCREEN_WIDTH - 980, 500);
+	context.fillText(scoreText, SCREEN_WIDTH - 170, 665);
 	
 	//loives
-	if(lives == 4)
-	{
-		context.drawImage(healthImage, 15, 620)
-	}
+	//if(lives == 4)
+	//{
+//		context.drawImage(healthImage, 15, 620)
+	//}
 	
 	// update the frame counter 
 	fpsTime += deltaTime;
@@ -291,6 +367,9 @@ function run()
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
+	
+
+	
 	
 	switch(gameState)
 	{

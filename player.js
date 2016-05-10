@@ -81,7 +81,7 @@ Player.prototype.update = function(deltaTime)
 			}
 	}
 }
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
+	if(keyboard.isKeyDown(keyboard.KEY_UP) == true)
 	{
 		jump = true;
 		if(left == true) {
@@ -145,8 +145,7 @@ Player.prototype.update = function(deltaTime)
 	var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 	var celldiag = cellAtTileCoord(LAYER_PLATFORMS,tx + 1, ty + 1);
 	
-	
-	
+
 	if (cellAtTileCoord(LAYER_RAVA, tx, ty -1))
 	{
 		this.isDead = true;
@@ -193,5 +192,7 @@ Player.prototype.update = function(deltaTime)
 
 Player.prototype.draw = function()
 {
-	this.sprite.draw(context, this.position.x, this.position.y);
+	this.sprite.draw(context,
+		this.position.x - worldOffsetX, 
+	this.position.y);
 };

@@ -91,6 +91,8 @@ tileset.src = TileMaps["lervel1"].tilesets[0].image;
 var LAYER_RAVA = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
+var LAYER_OBJECT_ENEMIES = 3;
+var LAYER_OBJECT_TRIGGERS = 4;
 
 //abitrary choice for 1m
 var METER = TILE;
@@ -134,6 +136,13 @@ scoreBoard.src = "scoreboard.png"
 var cells = [];
 
 var isdied = 4;
+
+var ENEMY_MAXDX = METER * 5;
+var ENEMY_ACCEL = ENEMY_MAXDX * 2;
+
+var enemies = [];
+
+var LAYER_COUNT
 
 // load an image to draw
 var chuckNorris = document.createElement("img");

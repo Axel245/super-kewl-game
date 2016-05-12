@@ -41,7 +41,7 @@ Enemy.prototype.update = function(deltaTime)
 	
 	if(this.pause > 0)
 	{
-		this.pause -= delaTime;
+		this.pause -= deltaTime;
 	}
 	else
 	{
@@ -70,7 +70,7 @@ Enemy.prototype.update = function(deltaTime)
 	}
 	
 	if(!this.moveRight)
-	{
+	{ 
 		if(celldown && !cell) {
 				ddx = ddx - ENEMY_ACCEL; // enemy wants to go left
 		}

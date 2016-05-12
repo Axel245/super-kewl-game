@@ -1,20 +1,11 @@
 //bullet.js
 
-var Bullet = function()
+var Bullet = function(x, y, moveRight)
 {
-	this.image = document.createElement("img");
-	this.position = new Vector2();
-	this.position.add(player.position);
-	this.velocity = new Vector2(1, 0);
-	this.width = 0;
-	this.height = 0;
-	var speed = 256;
-	this.rotation = player.rotation;
-	
-	this.velocity.rotateDirection(this.rotation);
-	this.velocity.multiplyScalar(speed);
-	
-	this.image.src = "hero.png";
+	this.sprite = new Sprite("bullet.png");
+	this.sprite.buildAnimation(1, 1, 32, 32, -1, [0]);
+	this.sprite.setAnimationOffset(0, 0, 0);
+	this.sprite.setLoop(0, false);
 };
 
 Bullet.prototype.update = function(deltaTime)

@@ -51,6 +51,15 @@ function runSplash(deltaTime)
 function runGameOver(deltaTime)
 {
 	context.drawImage(endgame, 0, 0);
+	
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER))
+	{
+		gameState = STATE_SPLASH;
+			isdied = 4;
+		return;
+		
+	}
+
 }
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
@@ -90,8 +99,8 @@ tileset.src = TileMaps["lervel1"].tilesets[0].image;
 
 var LAYER_RAVA = 0;
 var LAYER_PLATFORMS = 1;
-var LAYER_LADDERS = 2;
-var LAYER_OBJECT_ENEMIES = 3;
+var LAYER_LADDERS = 3;
+var LAYER_OBJECT_ENEMIES = 2;
 var LAYER_OBJECT_TRIGGERS = 4;
 
 //abitrary choice for 1m
@@ -233,6 +242,7 @@ function drawMap()
 	
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT;layerIdx++)
 	{
+		if(TileMaps["lervel1"].layers[layerIdx].visible == false) continue;
 		for(var y=0;y < TileMaps["lervel1"].layers[layerIdx].height; y++)
 		{
 			var idx = y * TileMaps["lervel1"].layers[layerIdx].width + startX;
@@ -259,6 +269,7 @@ var musicBackground;
 var sfxFire;
 
 function initialize(){
+	
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) {
 		cells[layerIdx] = [];
 		var idx = 0;
@@ -281,6 +292,7 @@ function initialize(){
 			}
 		}
 	}
+
 	musicBackground = new Howl(
 	{
 		urls: ["background.mp3"],
@@ -339,6 +351,11 @@ function runGame(deltaTime)
 		context.drawImage(healthImage25, 15, 620);
 	}
 	
+	for(var i=0; i < enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+	}
+	
 	context.drawImage(scoreBoard, 800, 620);
 	
 	//score
@@ -378,8 +395,6 @@ function run()
 	var deltaTime = getDeltaTime();
 	
 
-	
-	
 	switch(gameState)
 	{
 		case STATE_SPLASH:

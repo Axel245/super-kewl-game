@@ -150,6 +150,7 @@ var ENEMY_MAXDX = METER * 5;
 var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 
 var enemies = [];
+var bullets = [];
 
 var LAYER_COUNT
 
@@ -204,6 +205,15 @@ function cellAtPixelCoord(layer, x,y)
 	if(y> SCREEN_HEIGHT)
 		return 0;
 	return cellAtTileCoord(layer, p2t(x), p2t(y));
+};
+
+function barrier(layer, tx, ty){
+	if(tx<0 || tx >= MAP.tw)
+		return 0;
+	// let the player drop of the bottom of the screen (this means death)
+	if(ty>=MAP.th)
+		return 0;
+	return cells[layer][ty][tx];
 };
 
 function cellAtTileCoord(layer, tx, ty) // remove '|| y<0'
@@ -292,7 +302,19 @@ function initialize(){
 			}
 		}
 	}
-
+	// add enemies
+	idx = 0;
+	for(var y = 0; y < TileMaps["lervel1"].layers[LAYER_OBJECT_ENEMIES].height; y++) {
+		for(var x = 0; x < TileMaps["lervel1"].layers[LAYER_OBJECT_ENEMIES].width; x++) {
+			if(TileMaps["lervel1"].layers[LAYER_OBJECT_ENEMIES].data[idx] != 0) {
+			var px = tileToPixel(x);
+			var py = tileToPixel(y);
+			var e = new Enemy(px, py);
+			enemies.push(e);
+			}
+			idx++;
+		}
+	}
 	musicBackground = new Howl(
 	{
 		urls: ["background.mp3"],
@@ -315,6 +337,7 @@ function initialize(){
 
 var player = new Player();
 
+
 function runGame(deltaTime)
 {
 	context.fillStyle = "#ccc";		
@@ -323,6 +346,7 @@ function runGame(deltaTime)
 	drawMap();
 	player.update(deltaTime);
 	player.draw();
+	
 	if (player.isDead == true)
 	{
 		isdied -= 1;
@@ -358,11 +382,72 @@ function runGame(deltaTime)
 	
 	context.drawImage(scoreBoard, 800, 620);
 	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+		enemies[i].draw();
+	}
+	
+	/////////////////////
+
+			// bullets
+	var hit = false;
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].update(deltaTime);
+		if(bullets[i].position.x - worldOffsetX < 0 ||
+			bullets[i].position.x - worldOffsetX > SCREEN_WIDTH)
+			{
+				hit = true;
+			}
+			
+		for(var j=0; j<enemies.length; j++)
+		{
+			if(intersects( bullets[i].position.x, bullets[i].position.y, TILE, TILE,
+				enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+				{
+					// kill both the bullet and the enemy
+					enemies.splice(j , 1);
+					hit = true;
+					// increment the player score
+					score += 100;
+					break;
+				}
+		}
+		if(hit == true)
+		{
+			bullets.splice(i, 1);
+			break;
+		}	
+	}
+	
+	if(player.shootTimer > 0)
+    player.shootTimer -= deltaTime;
+	
+	if(player.shoot == true && player.isDead == false && player.shootTimer <= 0)
+	{	
+	if(player.direction == RIGHT){
+	var e = new Bullet(player.position.x + 100, player.position.y - 14, player.direction == RIGHT);
+		player.shootTimer += 0.2;
+		bullets.push(e);
+	}
+	else if(player.direction == LEFT){
+	var e = new Bullet(player.position.x - 60, player.position.y - 14, player.direction == RIGHT); 
+		player.shootTimer += 0.2;
+		bullets.push(e);
+}
+}
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].draw();
+	}
+	
 	//score
 	context.fillStyle = "yellow";
 	context.font = "32px Arial";
 	var scoreText = "Score: " + score;
 	context.fillText(scoreText, SCREEN_WIDTH - 170, 665);
+	
 	
 	//loives
 	//if(lives == 4)
@@ -386,14 +471,13 @@ function runGame(deltaTime)
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
 
-
 function run()
 {
 	context.fillStyle = "#ccc";
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
-	
+
 
 	switch(gameState)
 	{

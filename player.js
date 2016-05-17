@@ -7,37 +7,43 @@ var ANIM_WALK_LEFT = 2;
 var ANIM_IDLE_RIGHT = 3;
 var ANIM_JUMP_RIGHT = 4;
 var ANIM_WALK_RIGHT = 5;
-var ANIM_SHOOT_RIGHT = 6;
-var ANIM_SHOOT_LEFT = 7;
-var ANIM_MAX = 8;
+var ANIM_SHOOT_IDLE_RIGHT = 6;
+var ANIM_SHOOT_IDLE_LEFT = 7;
+var ANIM_SHOOT_RIGHT = 8;
+var ANIM_SHOOT_LEFT = 9;
+var ANIM_MAX = 10;
 var Player = function() {	
 	this.sprite = new Sprite("herospritesheet2.png");
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.15,
-			[20, 21, 22, 23, 24, 25, 26, 27]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.1,
-			[8, 9, 10, 11, 12]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.05,
-			[13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.15,
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.15, // 0
+			[20, 21, 22, 23, 24, 25, 26, 27]); 
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.1, // 1
+			[60, 61, 62, 63, 64, 65, 66, 67, 68, 69]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 2
+			[40, 41, 42, 43, 44, 45, 46]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.15, // 3
 			[10, 11, 12, 13, 14, 15, 16, 17]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.05,
-			[60, 61, 62, 63, 64]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.05,
-			[65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78]);
-	this.sprite.buildAnimation(10, 9, 64, 64, 0.05,
-			[79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]);
-    this.sprite.buildAnimation(10, 9, 64, 64, 0.05,
-			[27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 4
+			[50, 51, 52, 53, 54, 55, 56, 57, 58, 59]); 	
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 5
+			[30, 31, 32, 33, 34, 35, 36, 37]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 6
+			[70, 71, 72, 73, 74, 75, 76, 77]);
+    this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 7
+			[80, 81, 82, 83, 84, 85, 86, 87]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05, // 8
+			[100, 101, 102, 103, 104, 105, 106, 107]);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.05,
+			[90, 91, 92, 93, 94, 95, 96, 97]);    //9
 	
 	for(var i=0; i<ANIM_MAX; i++)
 	{
-		this.sprite.setAnimationOffset(i, -55, -87);
+		this.sprite.setAnimationOffset(i, -55, -150);
 	}
 	this.position = new Vector2();
 	this.position.set(2*TILE, 10*TILE );
 	
-	this.width = 159;
-	this.height = 163;
+	this.width = 64;
+	this.height = 64;
 	
 	this.velocity = new Vector2();
 	
@@ -112,12 +118,6 @@ this.cooldownTimer = 0.2;
 
  if(keyboard.isKeyDown(keyboard.KEY_Z) == true){
 	 this.shoot = true;
-	 if(this.direction == LEFT && this.sprite.currentAnimation != ANIM_SHOOT_LEFT){
-		 this.sprite.setAnimation(ANIM_SHOOT_LEFT);
-	 }
-	 if(this.direction == RIGHT && this.sprite.currentAnimation != ANIM_SHOOT_RIGHT){
-		 this.sprite.setAnimation(ANIM_SHOOT_RIGHT);
-	 }
  }
  else if(keyboard.isKeyDown(keyboard.KEY_Z) == false){
 	 this.shoot = false;
@@ -160,6 +160,21 @@ this.cooldownTimer = 0.2;
 		   // clamp at zero to prevent friction from making us jiggle side to side
 		   this.velocity.x = 0;
 	   }
+	
+	
+	if(this.direction == LEFT && wasleft && this.shoot && this.sprite.currentAnimation != ANIM_SHOOT_LEFT){
+		 this.sprite.setAnimation(ANIM_SHOOT_LEFT);
+	 }
+	 if(this.direction == RIGHT && wasright && this.shoot && this.sprite.currentAnimation != ANIM_SHOOT_RIGHT){
+		 this.sprite.setAnimation(ANIM_SHOOT_RIGHT);
+	 }
+	 
+	if(this.direction == LEFT && !wasleft && this.shoot && this.sprite.currentAnimation != ANIM_SHOOT_IDLE_LEFT){
+		 this.sprite.setAnimation(ANIM_SHOOT_IDLE_LEFT);
+	 }
+	 if(this.direction == RIGHT && !wasright && this.shoot && this.sprite.currentAnimation != ANIM_SHOOT_IDLE_RIGHT){
+		 this.sprite.setAnimation(ANIM_SHOOT_IDLE_RIGHT);
+	 }
 	
 	// collision detection
 	// Our collision detection logic is greatly simplified by the fact that the player is a rectangle

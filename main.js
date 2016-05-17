@@ -443,7 +443,7 @@ function runGame(deltaTime)
 	}
 	
 	//score
-	context.fillStyle = "yellow";
+	context.fillStyle = "white";
 	context.font = "32px Arial";
 	var scoreText = "Score: " + score;
 	context.fillText(scoreText, SCREEN_WIDTH - 170, 665);

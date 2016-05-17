@@ -11,12 +11,13 @@ var Bullet = function(x, y, moveRight)
 	this.position.set(x, y);
 	
 	this.velocity = new Vector2();
-	
+
 	this.moveRight = moveRight;
 	if(this.moveRight == true)
 		this.velocity.set(MAXDX *2, 0);
 	else
 		this.velocity.set(-MAXDX *2, 0);
+	
 };
 
 Bullet.prototype.update = function(deltaTime)

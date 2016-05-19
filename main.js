@@ -1,3 +1,7 @@
+// Cat sprite taken and edited from opengameart.org/content/cat-fighter-sprite-sheet AUTHOR - dogchicken
+// Music - Divine Beast Cave - Dark Cloud
+
+
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext("2d");
 
@@ -267,7 +271,7 @@ function drawMap()
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * 
 							(TILESET_TILE + TILESET_SPACING);
 					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE,
-							(x-startX)*TILE - offsetX, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
+							(x-startX)*TILE - offsetX, (y-1)*TILE, TILESET_TILE+1, TILESET_TILE+1);
 				}
 				idx++;
 			}
@@ -326,9 +330,9 @@ function initialize(){
 	
 	sfxFire = new Howl(
 		{
-			urls: ["fireeffect.ogg"],
+			urls: ["fireEffect.ogg"],
 			buffer: true,
-			volume: 1,
+			volume: 0.4,
 			onend: function() {
 					isSfxPlaying = false;
 			}
@@ -337,16 +341,28 @@ function initialize(){
 
 var player = new Player();
 
-
+var viewoffset = new Vector2();
 function runGame(deltaTime)
 {
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(carve, 0, 0);
+	context.save();
+	context.scale(1, 1);
+
 	drawMap();
+		if(player.position.x >= viewoffset.x + canvas.width/2)
+	{
+		viewoffset.x = player.position.x - canvas.width/2;
+	}
+	
 	player.update(deltaTime);
 	player.draw();
-	
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].draw();
+	}
+	context.restore();
 	if (player.isDead == true)
 	{
 		isdied -= 1;
@@ -388,6 +404,7 @@ function runGame(deltaTime)
 		enemies[i].draw();
 	}
 	
+	
 	/////////////////////
 
 			// bullets
@@ -421,6 +438,8 @@ function runGame(deltaTime)
 		}	
 	}
 	
+	
+	
 	if(player.shootTimer > 0)
     player.shootTimer -= deltaTime;
 	
@@ -437,10 +456,7 @@ function runGame(deltaTime)
 		bullets.push(e);
 }
 }
-	for(var i=0; i<bullets.length; i++)
-	{
-		bullets[i].draw();
-	}
+	
 	
 	//score
 	context.fillStyle = "white";

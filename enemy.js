@@ -1,10 +1,18 @@
-
-
+var enemywalkright = 0;
+var enemywalkleft = 1;
 var Enemy = function(x, y) 
 {	
-	this.sprite = new Sprite("bat2.png");
-	this.sprite.buildAnimation(10, 1, 88, 94, 0.3, [0,1]);
-	this.sprite.setAnimationOffset(0, -35, -40);
+	this.sprite = new Sprite("enemyspritesheet.png");
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.15,
+				[10, 11, 12, 13, 14, 15, 16, 17]);
+		this.sprite.setAnimationOffset(0, 0, -18);
+	this.sprite.buildAnimation(10, 13, 64, 64, 0.15,
+				[20, 21, 22, 23, 24, 25, 26, 27]);
+
+	this.sprite.setAnimationOffset(1, 0, -18);
+	
+	this.offset = new Vector2();
+	this.offset.set(0, 0);
 	
 	this.position = new Vector2();
 	this.position.set(x, y);
@@ -47,6 +55,7 @@ Enemy.prototype.update = function(deltaTime)
 			this.velocity.x = 0;
 			this.moveRight = false;
 			this.pause = 0.5;
+			this.sprite.setAnimation(enemywalkleft);
 		}
 	}
 	
@@ -59,6 +68,8 @@ Enemy.prototype.update = function(deltaTime)
 			this.velocity.x = 0;
 			this.moveRight = true;
 			this.pause = 0.5;
+			this.sprite.setAnimation(enemywalkright);
+		
 		}
 	}
 	

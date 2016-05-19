@@ -37,7 +37,7 @@ var Player = function() {
 	
 	for(var i=0; i<ANIM_MAX; i++)
 	{
-		this.sprite.setAnimationOffset(i, -55, -150);
+		this.sprite.setAnimationOffset(i, -25, -18);
 	}
 	this.position = new Vector2();
 	this.position.set(2*TILE, 10*TILE );
@@ -118,6 +118,7 @@ this.cooldownTimer = 0.2;
 
  if(keyboard.isKeyDown(keyboard.KEY_Z) == true){
 	 this.shoot = true;
+	 sfxFire.play();
  }
  else if(keyboard.isKeyDown(keyboard.KEY_Z) == false){
 	 this.shoot = false;
